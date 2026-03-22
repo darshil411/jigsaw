@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#050a1a" />
+  <title>Constellation Challenge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ★ STAR CANVAS BACKGROUND -->
+  <canvas id="starCanvas"></canvas>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 1: LANDING
+  ══════════════════════════════════════ -->
+  <div id="landingScreen" class="screen active">
+    <div class="landing-card glass-card">
+
+      <div class="logo-wrap">
+        <img id="logoImg" src="logo.png" alt="Logo" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'" />
+        <div id="logoFallback" class="logo-fallback" style="display:none">
+          <div class="logo-icon">✦</div>
+        </div>
+      </div>
+
+      <div class="landing-title-block">
+        <p class="landing-eyebrow">Astrophysics Society Presents</p>
+        <h1 class="landing-title">
+          <span class="title-line1">Constellation</span>
+          <span class="title-line2">Challenge</span>
+        </h1>
+        <p class="landing-subtitle">Reassemble the stars. Decode the cosmos.</p>
+      </div>
+
+      <div class="difficulty-selector">
+        <p class="selector-label">Select Difficulty</p>
+        <div class="difficulty-btns">
+          <button class="diff-btn" data-grid="3">
+            <span class="diff-icon">◈</span>
+            <span class="diff-name">Easy</span>
+            <span class="diff-desc">3×3</span>
+          </button>
+          <button class="diff-btn active" data-grid="4">
+            <span class="diff-icon">◈◈</span>
+            <span class="diff-name">Medium</span>
+            <span class="diff-desc">4×4</span>
+          </button>
+          <button class="diff-btn" data-grid="5">
+            <span class="diff-icon">◈◈◈</span>
+            <span class="diff-name">Hard</span>
+            <span class="diff-desc">5×5</span>
+          </button>
+        </div>
+      </div>
+
+      <button id="startBtn" class="cta-btn">
+        <span class="btn-glow"></span>
+        <span class="btn-text">Launch Puzzle</span>
+        <span class="btn-icon">⟶</span>
+      </button>
+
+      <p class="landing-hint">Place all pieces correctly and submit to reveal a hidden clue</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 2: GAME
+  ══════════════════════════════════════ -->
+  <div id="gameScreen" class="screen">
+
+    <!-- TOP BAR -->
+    <header class="game-header glass-bar">
+      <div class="header-left">
+        <div id="timerBlock" class="timer-block">
+          <span class="timer-icon">⧗</span>
+          <span id="timerDisplay" class="timer-display">02:00</span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <h2 class="game-title">Constellation Challenge</h2>
+      </div>
+
+      <div class="header-right">
+        <button id="restartBtn" class="icon-btn" title="Restart">
+          <span>↺</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN GAME AREA -->
+    <main class="game-main" id="gameMain">
+
+      <!-- PUZZLE GRID -->
+      <section class="puzzle-section">
+        <p class="section-label">
+          <span class="label-dot"></span>
+          Puzzle Board
+          <span class="piece-counter" id="pieceCounter">0 / 0 placed</span>
+        </p>
+        <div id="puzzleGrid" class="puzzle-grid"></div>
+      </section>
+
+      <!-- SUBMIT BUTTON -->
+      <div class="submit-area">
+        <button id="submitBtn" class="submit-btn">
+          <span class="btn-glow"></span>
+          <span>Validate Solution</span>
+          <span class="submit-icon">✦</span>
+        </button>
+      </div>
+
+      <!-- PIECES TRAY -->
+      <section class="tray-section">
+        <p class="section-label">
+          <span class="label-dot tray-dot"></span>
+          Piece Tray — Drag to the board
+        </p>
+        <div id="piecesTray" class="pieces-tray"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       MODAL: RESULT
+  ══════════════════════════════════════ -->
+  <div id="resultModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card glass-card">
+
+      <!-- SUCCESS STATE -->
+      <div id="successContent" class="modal-content" style="display:none">
+        <div class="modal-icon success-icon">
+          <div class="success-ring"></div>
+          ✦
+        </div>
+        <h3 class="modal-title success-title">Constellation Aligned!</h3>
+        <p class="modal-subtitle">You've decoded the cosmic pattern.</p>
+
+        <div class="hint-box">
+          <p class="hint-label">⬡ Hidden Clue Revealed</p>
+          <p id="hintText" class="hint-text"></p>
+        </div>
+
+        <div class="modal-actions">
+          <button id="playAgainBtn" class="cta-btn small">Play Again</button>
+        </div>
+      </div>
+
+      <!-- FAILURE STATE -->
+      <div id="failureContent" class="modal-content" style="display:none">
+        <div class="modal-icon fail-icon">✕</div>
+        <h3 class="modal-title fail-title">Misaligned</h3>
+        <p class="modal-subtitle">Some pieces are out of position.<br>The stars are still scattered.</p>
+        <div class="modal-actions">
+          <button id="retryBtn" class="cta-btn small outline">Try Again</button>
+        </div>
+      </div>
+
+      <!-- TIMEOUT STATE -->
+      <div id="timeoutContent" class="modal-content" style="display:none">
+        <div class="modal-icon timeout-icon">⧗</div>
+        <h3 class="modal-title timeout-title">Time Expired</h3>
+        <p class="modal-subtitle">The cosmos waits for no one.<br>The window has closed.</p>
+        <div class="modal-actions">
+          <button id="timeoutRetryBtn" class="cta-btn small">Try Again</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DRAG GHOST (mobile) -->
+  <div id="dragGhost" class="drag-ghost" aria-hidden="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
